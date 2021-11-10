@@ -13,10 +13,29 @@ int Sum_Rek_Gyakorlas(vector<int>& lista, int i=0)
 
 bool Eldontes(vector<int>& lista, int celszam, int i=0)
 {
-	if (true)
-	{
+	bool siker = celszam == 0; //
+	bool level = i == lista.size();
+	bool remenytelen = celszam < 0; // ilyen nem mindig van.
 
+	if (siker)
+		return true;
+	if (level || remenytelen)
+		return false;
+
+	/** /
+	return Eldontes(lista, celszam - lista[i], i + 1) || Eldontes(lista, celszam, i + 1);
+	/**/
+
+	/**/
+	for (int i = 0; i < 1; i++) // ilyen mindig van! ezért végigpróbálgatás
+	{
+		bool result = Eldontes(lista, celszam - i*lista[i], i + 1);
+		if (result)
+			return result; // ezért OKOS végigpróbálgatás!
 	}
+	return false;
+	/**/
+
 }
 
 int main()
