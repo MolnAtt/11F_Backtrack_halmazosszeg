@@ -13,9 +13,9 @@ int Sum_Rek_Gyakorlas(vector<int>& lista, int i=0)
 
 bool Eldontes(vector<int>& lista, int celszam, int i=0)
 {
-	bool siker = celszam == 0; //
-	bool level = i == lista.size();
-	bool remenytelen = celszam < 0; // ilyen nem mindig van.
+	bool siker = celszam == 0; // mikor találtuk meg, amit kerestünk
+	bool level = i == lista.size(); // mikor fogytak el a részproblémák, és ezért nem találtuk meg, amit kerestünk
+	bool remenytelen = celszam < 0; // mikor van az, hogy bár van részprobléma, de nem érdemes továbbkeresni. Ilyen nem mindig van.
 
 	if (siker)
 		return true;
@@ -87,23 +87,98 @@ void kiir2(const vector<int>& v, const vector<int>& mo)
 	cout << "}\n";
 }
 
+vector<vector<int>> megoldasok;
+vector<int> aktmo;
+
+void Kivalogatas(vector<int>& lista, int celszam, int i = 0)
+{
+	bool siker = celszam == 0; //
+	bool level = i == lista.size();
+	bool remenytelen = celszam < 0; // ilyen nem mindig van.
+
+	if (siker)
+	{
+		megoldasok.push_back(aktmo);
+		return;
+	}
+	if (level || remenytelen)
+		return;
+
+	/**/
+	for (int be = 1; be >= 0; be--) // végigpróbálgatás
+	{
+		aktmo[i] = be;
+		Kivalogatas(lista, celszam - be * lista[i], i + 1);
+	}
+	/**/
+}
+
+
+vector<int> legjobbmo;
+vector<int> aktualismo;
+bool defined;
+
+int osszeg(vector<int>& v)
+{
+	int sum = 0;
+	for (auto& i : v)
+	{
+		sum += i;
+	}
+	return sum;
+}
+
+bool jobb(vector<int>& egyik, vector<int>& masik)
+{
+	return osszeg(egyik) < osszeg(masik);
+}
+
+void Minimumkereses(vector<int>& lista, int celszam, int i = 0)
+{
+	bool siker = celszam == 0; //
+	bool level = i == lista.size();
+	bool remenytelen = celszam < 0 || (defined && osszeg(aktualismo) == osszeg(legjobbmo)); // MOST EZ KIBÕVÜL!!!!!!!!! Ezért fontos külön függvénnyel dolgozni, mert ez így gyorsabb!
+
+	if (siker)
+	{
+		defined = true;
+		if (jobb(legjobbmo, aktualismo))
+			legjobbmo = aktualismo;
+		return;
+	}
+	if (level || remenytelen)
+		return;
+
+	/**/
+	for (int be = 1; be >= 0; be--) // végigpróbálgatás
+	{
+		aktmo[i] = be;
+		Minimumkereses(lista, celszam - be * lista[i], i + 1);
+	}
+	/**/
+}
+
+
 int main()
 {
 /// egy halmazban lévõ számok összege rekurzívan
-	vector<int> v{9,1,7,5,3};
+	vector<int> v{9,1,7,5,2,3,4};
 	// cout << Sum_Rek_Gyakorlas(v);
+
+	int celszam = 11;
 
 	cerr << "teszt: ";
 	kiir(v);
+	cerr << "ebben keressuk a " << celszam <<" osszeget";
 
 	// ELDÖNTÉS
 	cerr << "Van-e ilyen osszegu halmaz?   ";
-	cout << Eldontes(v, 11)<< endl;
+	cout << Eldontes(v, celszam)<< endl;
 
 	// KERESÉS
 	mo.resize(v.size(), -1); // mo = [ -1, -1, -1, -1, -1 ]
 	cerr << "Ez itt egy ilyen halmaz:   ";
-	bool kereses_eredmenye = Kereses(v, 11);
+	bool kereses_eredmenye = Kereses(v, celszam);
 	cout << kereses_eredmenye << endl;
 	if (kereses_eredmenye)
 	{
@@ -111,7 +186,23 @@ int main()
 		kiir2(v, mo);
 	}
 
+	//Kivalogatas
+	aktmo.resize(v.size(), -1); 
+	cerr << "Ez itt az osszes ilyen halmaz:\n";
+	Kivalogatas(v, celszam);
+	for (auto& megoldas : megoldasok)
+	{
+		kiir2(v, megoldas);
+	}
+
+
+	//Minimumkeresés
+	legjobbmo.resize(v.size(), -1); 
+	aktualismo.resize(v.size(), -1); 
+	cerr << "Ez itt a legkisebb ilyen halmaz:\n";
+	Minimumkereses(v, celszam);
+	kiir2(v, legjobbmo);
+
 
 	
-
 }
