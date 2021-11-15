@@ -130,7 +130,7 @@ int osszeg(vector<int>& v)
 
 bool jobb(vector<int>& egyik, vector<int>& masik)
 {
-	return osszeg(egyik) < osszeg(masik);
+	return osszeg(egyik) > osszeg(masik);
 }
 
 void Minimumkereses(vector<int>& lista, int celszam, int i = 0)
@@ -141,9 +141,13 @@ void Minimumkereses(vector<int>& lista, int celszam, int i = 0)
 
 	if (siker)
 	{
-		defined = true;
-		if (jobb(legjobbmo, aktualismo))
+		cerr << "potencialis megoldast talaltam\n";
+		if (!defined || jobb(legjobbmo, aktualismo))
+		{
 			legjobbmo = aktualismo;
+			cerr << "jobb megoldast talaltam, csereltem\n";
+		}
+		defined = true;
 		return;
 	}
 	if (level || remenytelen)
@@ -152,7 +156,7 @@ void Minimumkereses(vector<int>& lista, int celszam, int i = 0)
 	/**/
 	for (int be = 1; be >= 0; be--) // végigpróbálgatás
 	{
-		aktmo[i] = be;
+		aktualismo[i] = be;
 		Minimumkereses(lista, celszam - be * lista[i], i + 1);
 	}
 	/**/
@@ -162,9 +166,9 @@ void Minimumkereses(vector<int>& lista, int celszam, int i = 0)
 int main()
 {
 /// egy halmazban lévõ számok összege rekurzívan
-	vector<int> v{9,1,7,5,2,3,4};
 	// cout << Sum_Rek_Gyakorlas(v);
 
+	vector<int> v{1,7,5,2,3,9,4};
 	int celszam = 11;
 
 	cerr << "teszt: ";
@@ -197,6 +201,7 @@ int main()
 
 
 	//Minimumkeresés
+	defined = false;
 	legjobbmo.resize(v.size(), -1); 
 	aktualismo.resize(v.size(), -1); 
 	cerr << "Ez itt a legkisebb ilyen halmaz:\n";
