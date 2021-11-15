@@ -3,6 +3,7 @@
 
 using namespace std;
 
+/*
 int Sum_Rek_Gyakorlas(vector<int>& lista, int i=0)
 {
 	if (i==lista.size())
@@ -10,6 +11,7 @@ int Sum_Rek_Gyakorlas(vector<int>& lista, int i=0)
 	
 	return lista[i] + Sum_Rek_Gyakorlas(lista, i+1);
 }
+*/
 
 bool Eldontes(vector<int>& lista, int celszam, int i=0)
 {
@@ -38,7 +40,6 @@ bool Eldontes(vector<int>& lista, int celszam, int i=0)
 }
 
 vector<int> mo;
-
 bool Kereses(vector<int>& lista, int celszam, int i = 0)
 {
 	bool siker = celszam == 0; //
@@ -89,7 +90,6 @@ void kiir2(const vector<int>& v, const vector<int>& mo)
 
 vector<vector<int>> megoldasok;
 vector<int> aktmo;
-
 void Kivalogatas(vector<int>& lista, int celszam, int i = 0)
 {
 	bool siker = celszam == 0; //
